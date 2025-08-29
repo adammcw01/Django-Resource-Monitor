@@ -19,16 +19,17 @@ To run this solution using docker please install the engine from [docker.com](do
 
 1. If running locally make sure you have python installed
 2. Create a virtual environment by running
-`Code goes here`
-3. Install dependencies by running `pip install -r requirements.txt`
+`python -m venv venv`
+3. Activate it by runnning `venv\Scripts\activate`
+4. Install dependencies by running `pip install -r requirements.txt`
 
 ### Starting The Application
 
 To run the app using docker compose, ensure the docker daemon is running.
 Open a command prompt at this location and run `docker compose etc...`
 
-1. Run `code 123` to start the API to generate data.
-2. Run `code 456` to start the Django Web app.
+1. Run `python .\api\app\app.py -d 16` to start the API to generate data. *The-d 16 creates 16 devices.*
+2. Run `python resourcemonitor/manage.py runserver 80` to start the Django Web app.
 3. Once started navigate to [127.0.0.1](http://127.0.0.1)
 
 ### Testing The Application

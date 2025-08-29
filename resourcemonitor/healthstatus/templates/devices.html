@@ -1,30 +1,30 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Device Dashboard</title>
+  <title>Network Health Status</title>
   <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <style>
-    .top-controls {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 1rem;
-    }
-  </style>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body class="container mt-5">
 
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Network Devices</h2>
+    <h2 class="mx-auto">Network Health Status</h2>
     <div class="top-controls">
-      <!-- Toggle Switch -->
+
+      <!-- Auto Refresh Toggle -->
       <div class="form-check form-switch">
         <input class="form-check-input" type="checkbox" id="autoRefreshSwitch">
-        <label class="form-check-label" for="autoRefreshSwitch">Auto Refresh (5)</label>
+        <label class="form-check-label" for="autoRefreshSwitch">Auto Refresh (5 seconds)</label>
       </div>
+
       <!-- Manual Refresh Button -->
       <button id="refreshBtn" class="btn btn-primary">Refresh</button>
+      
+      <!-- Dashboard Nav -->
+      <button id="nav-dashboard" class="btn btn-primary" onclick="location.href='/dashboard'">Dashboard</button>
     </div>
   </div>
 
@@ -37,47 +37,6 @@
     </tbody>
   </table>
 
-  <script>
-    async function fetchDevices() {
-      try {
-        const resp = await fetch("/devices");
-        const data = await resp.json();
-
-        const tbody = document.querySelector("#deviceTable tbody");
-        tbody.innerHTML = ""; // clear old rows
-
-        data.forEach(d => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${d.name}</td>
-            <td>${d.ip_address}</td>
-            <td>${d.status === true
-                ? '<span class="text-success">Up</span>'
-                : '<span class="text-danger">Down</span>'}
-            </td>`;
-          tbody.appendChild(row);
-        });
-      } catch (err) {
-        console.error("Error fetching devices:", err);
-      }
-    }
-
-    // Manual refresh button
-    document.getElementById("refreshBtn").addEventListener("click", fetchDevices);
-
-    // Auto refresh toggle
-    let intervalId = null;
-    document.getElementById("autoRefreshSwitch").addEventListener("change", (e) => {
-      if (e.target.checked) {
-        fetchDevices(); // refresh immediately when enabled
-        intervalId = setInterval(fetchDevices, 5000); // 5 seconds
-      } else {
-        clearInterval(intervalId);
-      }
-    });
-
-    // Initial load
-    fetchDevices();
-  </script>
+  <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

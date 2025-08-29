@@ -1,0 +1,15 @@
+.top-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+}
+
+#availTable th {
+  text-align: center !important;
+}
+
+#availTable td {
+  text-align: center;
+  vertical-align: middle;
+}
