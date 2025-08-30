@@ -28,7 +28,7 @@ To run this solution using docker please install the engine from [docker.com](do
 To run the app using docker compose, ensure the docker daemon is running.
 Open a command prompt at this location and run `docker compose etc...`
 
-1. Run `python .\api\app\app.py -d 16` to start the API to generate data. *The-d 16 creates 16 devices.*
+1. Run `python -m api.app.app -d 16` to start the API to generate data. *The-d 16 creates 16 devices.*
 2. Run `python resourcemonitor/manage.py runserver 80` to start the Django Web app.
 3. Once started navigate to [127.0.0.1](http://127.0.0.1)
 
@@ -38,7 +38,8 @@ Testing can only be ran locally using python unittest.
 For full testing history please visit github
 
 1. Open a command prompt here
-2. Run `py test .` to generate a test report.
+2. Run `cd api`
+3. Run `python -m unittest discover -s test -p "test_*.py"` to generate a test report for the Flaks API.
 
 ## Initial Approach And Understanding
 

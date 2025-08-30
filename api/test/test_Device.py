@@ -1,7 +1,7 @@
 from app.Device import Device
 import unittest
 
-class TestTestObj(unittest.TestCase):
+class TestSimDevice(unittest.TestCase):
     """
     Test suite for Device class.
     """
@@ -21,7 +21,17 @@ class TestTestObj(unittest.TestCase):
             bool: True if object is created successfully.
         """
         self.assertIsInstance(self.device, Device)
-    
+
+    def testConstructorInvalidID(self):
+        """
+        Test the instanciation of the object if ID is not an integer.
+
+        Asserts:
+            bool: True if object raises TypeError.
+        """
+        with self.assertRaises(TypeError):
+           Device('ID1', 'Name1', '192.168.0.1')
+
     def testConstructorKwarg(self):
         """
         Test class constructor when passing the optional keyword argument `avail`.
@@ -29,10 +39,10 @@ class TestTestObj(unittest.TestCase):
         Asserts:
             bool: True if object created successfully
         """
-        self.assertRaises(ValueError, Device(1, 'Device', '127.0.0.1', avail=0.5))
+        self.assertIsInstance(Device(1, 'Device', '127.0.0.1', avail=0.5), Device)
 
 
-    def testConstructorError(self):
+    def testConstructorInvalidAvail(self):
         """
         Test that the instanciation of the object fails.
         When the optional keyword `avail` is passed and invalid
@@ -40,20 +50,32 @@ class TestTestObj(unittest.TestCase):
         Asserts:
             bool: True if contrsuctor raises ValueError.
         """
-        self.assertRaises(ValueError, Device(1, 'Device', '127.0.0.1', avail=100))
+        with self.assertRaises(ValueError):
+            Device(1, 'Device', '127.0.0.1', avail=100)
 
-    def testGenerateStatus(self):
+    def testConstructorAvailBadType(self):
+        """
+        Test that the instanciation of the object fails.
+        When the optional keyword `avail` is passed is an invalid type.
+
+        Asserts:
+            bool: True if contrsuctor raises TypeError.
+        """
+        with self.assertRaises(ValueError):
+            Device(1, 'Device', '127.0.0.1', avail='NotAFloat')
+
+    def testGenerateStatusUp(self):
         """
         Test the generateStatus method returns True when a device has 100% availability
         """
         self.assertTrue(self.alwaysUp.generateStatus())
 
     
-    def testGenerateStatus(self):
+    def testGenerateStatusDown(self):
         """
         Test the generateStatus method returns False when a device has 0% availability
         """
-        self.assertTrue(self.alwaysDown.generateStatus())
+        self.assertFalse(self.alwaysDown.generateStatus())
 
     def testCallUp(self):
         """
@@ -64,7 +86,7 @@ class TestTestObj(unittest.TestCase):
         expected = {
             'id': 2,
             'name': "NewDevice2",
-            'ip_address': "127.0.0.2",
+            'ip_address': "192.168.0.2",
             'status': True
         }
         self.assertEqual(expected, actual)
@@ -78,7 +100,7 @@ class TestTestObj(unittest.TestCase):
         expected = {
             'id': 3,
             'name': "NewDevice3",
-            'ip_address': "127.0.0.3",
+            'ip_address': "192.168.0.3",
             'status': False
         }
         self.assertEqual(expected, actual)

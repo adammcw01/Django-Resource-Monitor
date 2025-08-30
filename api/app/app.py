@@ -1,6 +1,6 @@
 import argparse
 from typing import List, Dict
-from Device import Device
+from .Device import Device
 from flask import Flask, Response, current_app
 from random import choice
 import sys
@@ -25,7 +25,7 @@ def getStatus()->Response:
 
     reply: str = json.dumps(status)
 
-    if reply == 'null': # Handle case where device list is empty.
+    if reply == '[]': # Handle case where device list is empty.
         response: Flask.Response = Response(
             response='{Error: No Devices Found}',
             status=202,
@@ -70,7 +70,10 @@ def main(NUM_DEVICES: str)->int:
     try:
         NUM_DEVICES: int = int(NUM_DEVICES)
     except ValueError:
-        raise ValueError('Number of devices must be an integer.')
+        raise TypeError('Number of devices must be an integer.')
+    
+    if NUM_DEVICES < 0:
+        raise ValueError('Number of devices cannot be less than 0.')
 
     NAMES: List[str] = ['Router', 'Switch', 'Phone', 'Firewall', 'PC'] # Default Prefixes for device names.
     IP_PREFIX: str = '192.168.0.' # IP address range for devices.

@@ -5,6 +5,7 @@
   gap: 1rem;
 }
 
+/* Used when rendering Pandas DataFrame on metrics page. */
 #availTable th {
   text-align: center !important;
 }

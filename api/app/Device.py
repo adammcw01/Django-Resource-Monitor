@@ -43,13 +43,20 @@ class Device:
         Raises:
             ValueError: If Keyword Availability is named and outside of range 0-1.
         """
-        
-        avail: float = kwargs.get('avail', uniform(0.8, 1))
-        if isinstance(avail, float):
-            if ((avail > 1) or (avail < 0)):
-                raise ValueError(f'Attempted to create a device with {round(avail*100)}% availability.')
+        # Validate ID
+        if isinstance(id, int):
+            pass
         else:
-            avail: float = uniform(0.8, 1) # If avail is invalid type assign random availability
+            raise TypeError(f'Expected id to be int, got {type(id).__name__}')
+        
+        # Validate avail if passed as arg.
+        try:
+            avail: float = float(kwargs.get('avail', uniform(0.8, 1)))
+        except ValueError:
+            raise ValueError(f'Could not cast avail as float.')
+        
+        if ((avail > 1) or (avail < 0)):
+            raise ValueError(f'Attempted to create a device with {round(avail*100)}% availability.')
 
         self.__id: int = id
         self.__name: str = name

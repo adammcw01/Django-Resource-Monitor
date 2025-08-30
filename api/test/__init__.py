@@ -1,1 +1,1 @@
-# This file is intentionally left black for package initalisation.
+# This file is intentionally left blank for package initialization.

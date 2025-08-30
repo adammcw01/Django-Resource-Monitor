@@ -1,3 +1,4 @@
+// Fetch device data from API and generate HTML table based on response.
 document.addEventListener("DOMContentLoaded", () => {
   async function fetchDevices() {
     try {
@@ -5,14 +6,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await resp.json();
 
       const tbody = document.querySelector("#deviceTable tbody");
-      tbody.innerHTML = ""; // clear old rows
+      tbody.innerHTML = ""; // Reset Table
 
       data.forEach(d => {
         const row = document.createElement("tr");
         row.innerHTML = `
           <td>${d.name}</td>
           <td>${d.ip_address}</td>
-          <td>${d.status === true
+          <td>${d.status === true // If device status is true, device is up, otherwise down.
               ? '<span class="text-success">Up</span>'
               : '<span class="text-danger">Down</span>'}
           </td>`;
