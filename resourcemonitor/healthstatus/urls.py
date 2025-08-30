@@ -1,3 +1,5 @@
+# This file contains URL routing for the health status app.
+
 from django.urls import path
 from . import views
 

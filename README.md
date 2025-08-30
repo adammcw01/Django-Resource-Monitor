@@ -38,8 +38,8 @@ Testing can only be ran locally using python unittest.
 For full testing history please visit github
 
 1. Open a command prompt here
-2. Run `cd api`
-3. Run `python -m unittest discover -s test -p "test_*.py"` to generate a test report for the Flaks API.
+2. Run `cd api` and then `pytest` to generate a test report for the Flaks API.
+3. Run cd into `Django-Resource-Monitor\resourcemonitor` and then `pytest` to generate a test report for the Django backend.
 
 ## Initial Approach And Understanding
 

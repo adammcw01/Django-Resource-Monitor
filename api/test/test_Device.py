@@ -1,106 +1,102 @@
+"""
+This file contains a test suite for the Device class.
+"""
+import pytest
 from app.Device import Device
-import unittest
 
-class TestSimDevice(unittest.TestCase):
+# Fixtures to create reusable Device instances used in later tests
+
+@pytest.fixture
+def device():
     """
-    Test suite for Device class.
+    A generic device with default availability.
+    Used to test basic instantiation.
     """
-    def setUp(self):
-        """
-        A helper method to create objects refered to in tests
-        """
-        self.device = Device(1, 'NewDevice1', '192.168.0.1')
-        self.alwaysUp = Device(2, 'NewDevice2', '192.168.0.2', avail=1)
-        self.alwaysDown = Device(3, 'NewDevice3', '192.168.0.3', avail=0)
+    return Device(1, 'NewDevice1', '192.168.0.1')
 
-    def testConstructor(self):
-        """
-        Test the instanciation of the object.
+@pytest.fixture
+def always_up():
+    """
+    A device with 100% availability.
+    Used to test status generation and call behavior when always up.
+    """
+    return Device(2, 'NewDevice2', '192.168.0.2', avail=1)
 
-        Asserts:
-            bool: True if object is created successfully.
-        """
-        self.assertIsInstance(self.device, Device)
+@pytest.fixture
+def always_down():
+    """
+    A device with 0% availability.
+    Used to test status generation and call behavior when always down.
+    """
+    return Device(3, 'NewDevice3', '192.168.0.3', avail=0)
 
-    def testConstructorInvalidID(self):
-        """
-        Test the instanciation of the object if ID is not an integer.
+# Test cases for Device class behavior
 
-        Asserts:
-            bool: True if object raises TypeError.
-        """
-        with self.assertRaises(TypeError):
-           Device('ID1', 'Name1', '192.168.0.1')
+def testConstructor(device):
+    """
+    Test that a Device object is instantiated correctly.
+    """
+    assert isinstance(device, Device)
 
-    def testConstructorKwarg(self):
-        """
-        Test class constructor when passing the optional keyword argument `avail`.
+def testConstructorInvalidID():
+    """
+    Test that passing a non-integer ID raises a TypeError.
+    """
+    with pytest.raises(TypeError):
+        Device('ID1', 'Name1', '192.168.0.1')
 
-        Asserts:
-            bool: True if object created successfully
-        """
-        self.assertIsInstance(Device(1, 'Device', '127.0.0.1', avail=0.5), Device)
+def testConstructorKwarg():
+    """
+    Test that the optional 'avail' keyword argument is accepted and used.
+    """
+    assert isinstance(Device(1, 'Device', '127.0.0.1', avail=0.5), Device)
 
+def testConstructorInvalidAvail():
+    """
+    Test that passing an invalid 'avail' value (>1) raises a ValueError.
+    """
+    with pytest.raises(ValueError):
+        Device(1, 'Device', '127.0.0.1', avail=100)
 
-    def testConstructorInvalidAvail(self):
-        """
-        Test that the instanciation of the object fails.
-        When the optional keyword `avail` is passed and invalid
+def testConstructorInvalidAvailType():
+    """
+    Test that passing a non-float 'avail' value raises a ValueError.
+    """
+    with pytest.raises(ValueError):
+        Device(1, 'Device', '127.0.0.1', avail='NotAFloat')
 
-        Asserts:
-            bool: True if contrsuctor raises ValueError.
-        """
-        with self.assertRaises(ValueError):
-            Device(1, 'Device', '127.0.0.1', avail=100)
+def testGenerateStatusUp(always_up):
+    """
+    Test that generateStatus returns True for a device with 100% availability.
+    """
+    assert always_up.generateStatus() is True
 
-    def testConstructorAvailBadType(self):
-        """
-        Test that the instanciation of the object fails.
-        When the optional keyword `avail` is passed is an invalid type.
+def testGenerateStatusDown(always_down):
+    """
+    Test that generateStatus returns False for a device with 0% availability.
+    """
+    assert always_down.generateStatus() is False
 
-        Asserts:
-            bool: True if contrsuctor raises TypeError.
-        """
-        with self.assertRaises(ValueError):
-            Device(1, 'Device', '127.0.0.1', avail='NotAFloat')
+def testCallUp(always_up):
+    """
+    Test that calling a device with 100% availability returns expected status dictionary.
+    """
+    expected = {
+        'id': 2,
+        'name': "NewDevice2",
+        'ip_address': "192.168.0.2",
+        'status': True
+    }
+    assert always_up() == expected
 
-    def testGenerateStatusUp(self):
-        """
-        Test the generateStatus method returns True when a device has 100% availability
-        """
-        self.assertTrue(self.alwaysUp.generateStatus())
-
-    
-    def testGenerateStatusDown(self):
-        """
-        Test the generateStatus method returns False when a device has 0% availability
-        """
-        self.assertFalse(self.alwaysDown.generateStatus())
-
-    def testCallUp(self):
-        """
-        Test that the overloaded call method returns the expected dictionary,
-        when the device has 100 availability.
-        """
-        actual = self.alwaysUp()
-        expected = {
-            'id': 2,
-            'name': "NewDevice2",
-            'ip_address': "192.168.0.2",
-            'status': True
-        }
-        self.assertEqual(expected, actual)
-
-    def testCallDown(self):
-        """
-        Test that the overloaded call method returns the expected dictionary,
-        when the device has 100 availability.
-        """
-        actual = self.alwaysDown()
-        expected = {
-            'id': 3,
-            'name': "NewDevice3",
-            'ip_address': "192.168.0.3",
-            'status': False
-        }
-        self.assertEqual(expected, actual)
+def testCallDown(always_down):
+    """
+    Test that calling a device with 0% availability returns expected status dictionary.
+    """
+    expected = {
+        'id': 3,
+        'name': "NewDevice3",
+        'ip_address': "192.168.0.3",
+        'status': False
+    }
+    assert always_down() == expected

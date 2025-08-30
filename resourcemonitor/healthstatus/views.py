@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpRequest
 import requests
 import logging
 from healthstatus.models import DeviceStatus, SystemMetric
@@ -8,17 +8,26 @@ import pandas as pd
 from .utils import generateLog, getDeviceAvail, getAvailTable
 import plotly.graph_objects as go
 from django.utils.safestring import mark_safe
+from typing import List
 
 logger = logging.getLogger(__name__)
 
-DEVICE_API_URL = "http://127.0.0.1:8000/devices"
+def callDeviceService(request: HttpRequest) -> JsonResponse:
+    """
+    Fetch devices from Flask API and record response in SQLite.
 
-def callDeviceService(request):
-    """Fetch devices from a mock API and record response in SQLite."""
+    Args:
+        request (HttpRequest): The HTTP request.
+    
+    Returns:
+        JsonResponse: The JSON response containing device data or error information.
+    """
+    DEVICE_API_URL: str = "http://127.0.0.1:8000/devices"
+
     try:
-        resp = requests.get(DEVICE_API_URL, timeout=5)
+        resp: requests.Response = requests.get(DEVICE_API_URL, timeout=5)
         resp.raise_for_status()
-        devices = resp.json()
+        devices: List[dict] = resp.json()
     
         for d in devices:
             DeviceStatus.objects.create(
@@ -28,40 +37,53 @@ def callDeviceService(request):
                 status=d["status"],
             )
 
-        generateLog("/devices", resp.status_code, True)
+        generateLog("/devices", resp.status_code, True) # Store status in DeviceStatus
 
         logger.info("Stored %d device records", len(devices))
         return JsonResponse(devices, safe=False)
 
     except Exception as e:
         logger.error("Error fetching device data: %s", e)
-        generateLog("/devices", getattr(e.response, 'status_code', 500), False) 
+        status = getattr(getattr(e, "response", None), "status_code", 500) # Log none if empty response.
+        generateLog("/devices", status, False) # Record error in SystemMetric
         return JsonResponse({"error": str(e)}, status=500)
 
 
-def frontEnd(request):
+def frontEnd(request: HttpRequest) -> JsonResponse:
     """
     Serve the front end to the client.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+
+    Returns:
+        JsonResponse: The JSON response containing device data or error information.
     """
-    generateLog("/index", 200, True)
-    return render(request, "devices.html")
+    generateLog("/index", 200, True) # Record serve in SystemMetric
+    return render(request, "devices.html") # Devices page connects to API seperately to allow updates without refresh.
 
 
-def metricsDashboard(request):
-    """Display metrics dashboard using Plotly."""
+def metricsDashboard(request: HttpRequest) -> render:
+    """
+    Generate and Display Metrics Dashboard.
+    Using Plotly.
+
+    Args:
+        request (HttpRequest): The HTTP request.
+
+    Returns:
+        render: Rendered Plotly dashboard.
+    """
     generateLog('/metrics', 200, True)
 
-    df = getDeviceAvail()
+    tablehtml: str = getAvailTable()
 
-    # --- Device Table ---
-    tablehtml = getAvailTable()
-
-    # --- System Metrics Timeline ---
-    sys_df = pd.DataFrame(list(SystemMetric.objects.values()))
-    if not sys_df.empty:
-        sys_df["timestamp"] = pd.to_datetime(sys_df["timestamp"])
-        sys_fig = px.scatter(
-            sys_df,
+    # System Metrics Timeline
+    statsDF: pd.DataFrame = pd.DataFrame(list(SystemMetric.objects.values()))
+    if not statsDF.empty:
+        statsDF["timestamp"] = pd.to_datetime(statsDF["timestamp"])
+        sys_fig: go.Figure = px.scatter(
+            statsDF,
             x="timestamp",
             y="endpoint",
             color="success",
@@ -69,15 +91,15 @@ def metricsDashboard(request):
             title="System Events Timeline",
         )
         sys_fig.update_layout(height=250, margin=dict(l=10, r=10, t=40, b=10))
-        sys_html = sys_fig.to_html(full_html=False)
+        sys_html: str = sys_fig.to_html(full_html=False)
     else:
-        sys_html = "<p>No system metrics yet</p>"
+        sys_html: str = "<p>No system metrics yet</p>"
 
     return render(
         request,
         "metrics.html",
         {
-            "table": mark_safe(tablehtml),
-            "system_chart": mark_safe(sys_html),
+            "table": mark_safe(tablehtml), # pass HTML table through to template.
+            "system_chart": mark_safe(sys_html), # pass timeline to template.
         },
     )
