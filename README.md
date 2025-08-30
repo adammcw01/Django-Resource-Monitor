@@ -1,10 +1,10 @@
 # [Django-Resource-Monitor](https://github.com/adammcw01/Django-Resource-Monitor)
 
 This project is a technical exercise completed in part as an application for a role in Network Reliability Engineering.
-The goal is to create a self-service dashboard to monitor a collection of networked devices. To quickly enable teams to monitor the health of the network.
+The goal is to create a self-service dashboard to monitor a collection of networked devices. Enabling teams to quickly monitor the health of the network.
 
 ---
-Throughout this project I will demonstration my approach towards the solution, occasionally offering alternative approaches when applicable.
+Throughout this project I will demonstrate my approach towards the solution, occasionally offering alternative approaches when applicable.
 
 ## How To Deploy
 
@@ -34,8 +34,8 @@ Open a command prompt at this location and run `docker-compose up --build`
 
 ### Testing The Application
 
-Testing can only be ran locally using python unittest.
-For full testing history please visit github
+Testing can only be run locally using python unittest.
+For full testing history please visit [github](https://github.com/adammcw01/Django-Resource-Monitor/actions)
 
 1. Open a command prompt here
 2. Run `cd api` and then `pytest` to generate a test report for the Flaks API.
@@ -48,8 +48,8 @@ The project has 5 clearly outlined deliverables.
 1. A Django backend web app to serve a single page to the user.
 2. Create an API to fetch the status' of devices on the network.
 3. A simple user interface to allow users to quickly identify issues.
-4. The project should be organised in  a professional manner. @ToDo
-5. Functional unit-testing written in pytest. @ToDo
+4. The project should be organised in  a professional manner.
+5. Functional unit-testing written in pytest.
 
 ---
 From this I have identified some additional functionality that I believe could improve this system (Nice to haves).
