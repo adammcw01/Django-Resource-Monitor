@@ -9,6 +9,7 @@ from .utils import generateLog, getDeviceAvail, getAvailTable
 import plotly.graph_objects as go
 from django.utils.safestring import mark_safe
 from typing import List
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,12 @@ def callDeviceService(request: HttpRequest) -> JsonResponse:
     Returns:
         JsonResponse: The JSON response containing device data or error information.
     """
-    DEVICE_API_URL: str = "http://127.0.0.1:8000/devices"
+
+    # Determine if Django is running as part of Docker compose or not
+    if os.getenv("RUN_ENV") == "docker":
+        DEVICE_API_URL = "http://network_devices_api:8000/devices" # Address of dependant container.
+    else:
+        DEVICE_API_URL = "http://127.0.0.1:8000/devices" # Fallback for local instances.
 
     try:
         resp: requests.Response = requests.get(DEVICE_API_URL, timeout=5)

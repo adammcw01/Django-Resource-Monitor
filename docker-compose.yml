@@ -1,0 +1,32 @@
+services:
+  network_devices_api:
+    environment:
+      - RUN_ENV=docker
+    build:
+      context: .
+      dockerfile: /api/app/Dockerfile
+    container_name: network_devices_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api:/app
+      - ./requirements.txt:/requirements.txt:ro
+    restart: always
+
+  django:
+    environment:
+      - RUN_ENV=docker
+    build:
+      context: .
+      dockerfile: /resourcemonitor/Dockerfile
+    container_name: resourcemonitor_django_backend
+    ports:
+      - "80:80"
+    volumes:
+      - ./resourcemonitor:/app
+      - ./requirements.txt:/requirements.txt:ro
+    restart: always
+    depends_on:
+      - network_devices_api
+
+

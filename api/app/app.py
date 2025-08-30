@@ -5,6 +5,7 @@ from flask import Flask, Response, current_app
 from random import choice
 import sys
 import json
+import os
 
 app = Flask(__name__)
 
@@ -82,7 +83,13 @@ def main(NUM_DEVICES: str)->int:
     
     app.devices = devices # Add devices to Flask  app environment.
 
-    app.run(host="127.0.0.1", port=8000)
+    # Determine if instance is running in Docker
+    if os.getenv("RUN_ENV") == "docker":
+        host: str = "0.0.0.0" # Expose to other containers
+    else:
+        host: str = "127.0.0.1" # Strictly Localhost
+
+    app.run(host=host, port=8000)
 
 if __name__ == '__main__':
     

@@ -26,7 +26,7 @@ To run this solution using docker please install the engine from [docker.com](do
 ### Starting The Application
 
 To run the app using docker compose, ensure the docker daemon is running.
-Open a command prompt at this location and run `docker compose etc...`
+Open a command prompt at this location and run `docker-compose up --build`
 
 1. Run `python -m api.app.app -d 16` to start the API to generate data. *The-d 16 creates 16 devices.*
 2. Run `python resourcemonitor/manage.py runserver 80` to start the Django Web app.
