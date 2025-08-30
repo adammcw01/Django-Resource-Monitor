@@ -15,7 +15,7 @@ There are two ways of running this solution.
 
 ### Prerequisites (How to Setup)
 
-To run this solution using docker please install the engine from [docker.com](docker.com)
+To run this solution using docker please install the engine from [docker.com](https://www.docker.com/)
 
 1. If running locally make sure you have python installed
 2. Create a virtual environment by running
@@ -83,5 +83,4 @@ I believe the follow would all be considered good tools for storing the systems 
 * PostgreSQL (timescaleDB extension) - Commonly used and easy to maintain.
 * InfluxDB - Very efficient for large scale time series data.
 * Prometheus - Easy setup and high compatability with visualisation tools.
-
-For this project I will use Prometheus due to previous experience with the tool and the ease of use when incorporating Open Telemetry.
+* SQLite - Compatible with Django by default. Minimal setup required.
