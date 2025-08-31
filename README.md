@@ -1,7 +1,7 @@
 # [Django-Resource-Monitor](https://github.com/adammcw01/Django-Resource-Monitor)
 
 This project is a technical exercise completed in part as an application for a role in Network Reliability Engineering.
-The goal is to create a self-service dashboard to monitor a collection of networked devices. Enabling teams to quickly monitor the health of the network.
+The goal is to create a self-service dashboard to monitor a collection of networked devices, enabling teams to quickly monitor the health of the network.
 
 ---
 Throughout this project I will demonstrate my approach towards the solution, occasionally offering alternative approaches when applicable.
@@ -11,7 +11,7 @@ Throughout this project I will demonstrate my approach towards the solution, occ
 There are two ways of running this solution.
 
 1. If Docker is installed you can run the docker compose file to handle everything.
-2. The API and webserver can be run independnetly.
+2. The API and webserver can be run independnetly when deploying locally.
 
 ### Prerequisites (How to Setup)
 
@@ -28,13 +28,15 @@ To run this solution using docker please install the engine from [docker.com](ht
 To run the app using docker compose, ensure the docker daemon is running.
 Open a command prompt at this location and run `docker-compose up --build`
 
+If deploying locally:
+
 1. Run `python -m api.app.app -d 16` to start the API to generate data. *The-d 16 creates 16 devices.*
 2. Run `python resourcemonitor/manage.py runserver 80` to start the Django Web app.
 3. Once started navigate to [127.0.0.1](http://127.0.0.1)
 
 ### Testing The Application
 
-Testing can only be run locally using python unittest.
+Testing can only be run locally using PyTest.
 For full testing history please visit [github](https://github.com/adammcw01/Django-Resource-Monitor/actions)
 
 1. Open a command prompt here
@@ -45,7 +47,7 @@ For full testing history please visit [github](https://github.com/adammcw01/Djan
 
 The project has 5 clearly outlined deliverables.
 
-1. A Django backend web app to serve a single page to the user.
+1. A Django backend web app to serve a simple web interface to the user.
 2. Create an API to fetch the status' of devices on the network.
 3. A simple user interface to allow users to quickly identify issues.
 4. The project should be organised in  a professional manner.
@@ -56,8 +58,8 @@ From this I have identified some additional functionality that I believe could i
 
 * Additional traceability for the health of the systems itself.
   * Each component should generate logs.
-  * These logs should be stored in a suitable time-series database.
-  * An administrator should be able to generate metrics from these logs.
+  * These logs should be stored in a suitable database.
+  * An end user should be able to generate metrics from these logs.
 * In addition to being able to quickly see the status of each device, the user should be able to generate metrics for the devices to ensure the SLOs are being met.
 * The system should be flexible enough to handle a scaling number of devices.
 * Different components of the system should be able to operate independently to ensure availability.
